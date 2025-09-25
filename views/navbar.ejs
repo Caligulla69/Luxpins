@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Luxpins Navbar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'blue-ncs': '#0094C6',
+                        'blue-premium': '#007AA3',
+                        'lapis-lazuli': '#005E7C',
+                        'deep-teal': '#004C63',
+                        'oxford-blue': '#000022',
+                        'soft-navy': '#0A0A2A',
+                        'rich-black': '#040F16',
+                        'rich-black-premium': '#0D1A22',
+                        'penn-blue': '#001242',
+                        'penn-blue-premium': '#0A1C3C'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+      .navbar {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(0, 148, 198, 0.1);
+      }
+
+      .nav-btn {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .nav-btn:hover {
+        background: rgba(0, 148, 198, 0.1);
+        transform: translateY(-1px);
+      }
+
+      .nav-btn:active {
+        transform: translateY(0);
+      }
+
+      .search-input {
+        background: #f8fafc;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+      }
+
+      .search-input:focus {
+        background: #ffffff;
+        border-color: #0094C6;
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(0, 148, 198, 0.1);
+      }
+
+      .logo {
+        background: linear-gradient(135deg, #0094C6 0%, #005E7C 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 700;
+      }
+
+      .nav-link {
+        color: #374151;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        position: relative;
+      }
+
+      .nav-link:hover {
+        color: #0094C6;
+      }
+
+      .nav-link::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -4px;
+        left: 50%;
+        background: linear-gradient(90deg, #0094C6, #007AA3);
+        transition: all 0.3s ease;
+        transform: translateX(-50%);
+      }
+
+      .nav-link:hover::after {
+        width: 100%;
+      }
+
+      .premium-btn {
+        background: linear-gradient(135deg, #0094C6 0%, #007AA3 100%);
+        transition: all 0.3s ease;
+      }
+      
+      .premium-btn:hover {
+        box-shadow: 0 8px 25px rgba(0, 148, 198, 0.3);
+        transform: translateY(-2px);
+      }
+
+      .dropdown-menu {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(0, 148, 198, 0.1);
+      }
+
+      @media (max-width: 768px) {
+        .mobile-hide {
+          display: none;
+        }
+        .search-container {
+          max-width: 200px;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .search-container {
+          max-width: 150px;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 font-inter">
+    <!-- Luxpins Navbar -->
+    <nav class="navbar fixed top-0 left-0 right-0 z-50 px-4 py-3">
+      <div class="max-w-screen-2xl mx-auto flex items-center justify-between">
+        <!-- Left Section -->
+        <div class="flex items-center space-x-4">
+          <!-- Logo -->
+          <a href="/feed" class="flex items-center space-x-8 mr-3">
+            <span class="logo text-2xl font-bold mobile-hide">Luxpins</span>
+            <span class="logo text-2xl font-bold hidden mobile-show sm:hidden">L</span>
+          </a>
+
+          <!-- Navigation Links -->
+          <div class="flex items-center space-x-8 ml-6 mobile-hide">
+            <a href="/feed" class="nav-link text-base">Home</a>
+            <a href="/postUpload" class="nav-link text-base">Create</a>
+          </div>
+        </div>
+
+        <!-- Center - Search -->
+        <div class="flex-1 max-w-2xl mx-4 sm:mx-8 search-container">
+          <div class="relative">
+            <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            <input
+              type="text"
+              placeholder="Search for ideas"
+              class="search-input w-full pl-12 pr-4 py-3 rounded-full text-base border-none"
+            />
+          </div>
+        </div>
+
+        <!-- Right Section -->
+        <div class="flex items-center space-x-2">
+
+          
+          
+          <!-- Profile -->
+          <button
+            class="nav-btn w-12 h-12 rounded-full bg-gradient-to-br from-blue-ncs to-blue-premium flex items-center justify-center"
+            title="Profile"
+          >
+            <span class="text-white font-semibold text-lg">A</span>
+          </button>
+
+          <!-- Dropdown Wrapper -->
+          <div class="relative inline-block text-left">
+            <!-- Dropdown Toggle -->
+            <button
+              class="nav-btn w-10 h-10 rounded-full bg-white shadow-sm border border-gray-200 flex items-center justify-center hover:shadow-md"
+              id="dropdown-button"
+              aria-expanded="false"
+              aria-haspopup="true"
+            >
+              <i class="fas fa-chevron-down text-gray-700 text-sm"></i>
+            </button>
+
+            <!-- Dropdown Menu -->
+            <div
+              id="dropdown-menu"
+              class="dropdown-menu hidden absolute right-0 mt-2 w-48 rounded-xl shadow-lg ring-1 ring-black ring-opacity-5"
+            >
+              <div class="py-2">
+                <a href="/profile" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-ncs transition-colors">
+                  <i class="fas fa-user mr-3 text-gray-400"></i>
+                  View Profile
+                </a>
+                
+                <hr class="my-2 border-gray-100">
+                <a href="/logout" class="flex items-center px-4 py-3 text-sm text-red-600 hover:bg-red-50 font-medium transition-colors">
+                  <i class="fas fa-sign-out-alt mr-3"></i>
+                  Logout
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Demo content spacer -->
+    <div class="h-20"></div>
+
+    <script>
+      // Navbar functionality
+      const navbar = document.querySelector(".navbar");
+      const searchInput = document.querySelector(".search-input");
+      const buttons = document.querySelectorAll(".nav-btn");
+      const dropdownBtn = document.getElementById("dropdown-button");
+      const dropdownMenu = document.getElementById("dropdown-menu");
+
+      // Search functionality with enhanced feedback
+      searchInput.addEventListener("input", function () {
+        console.log("Searching:", this.value);
+        // Add search logic here
+      });
+
+      // Enhanced dropdown functionality
+      dropdownBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const isHidden = dropdownMenu.classList.contains("hidden");
+        
+        if (isHidden) {
+          dropdownMenu.classList.remove("hidden");
+          dropdownMenu.style.opacity = "0";
+          dropdownMenu.style.transform = "translateY(-10px)";
+          
+          requestAnimationFrame(() => {
+            dropdownMenu.style.transition = "all 0.2s ease";
+            dropdownMenu.style.opacity = "1";
+            dropdownMenu.style.transform = "translateY(0)";
+          });
+        } else {
+          dropdownMenu.style.opacity = "0";
+          dropdownMenu.style.transform = "translateY(-10px)";
+          
+          setTimeout(() => {
+            dropdownMenu.classList.add("hidden");
+          }, 200);
+        }
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener("click", (e) => {
+        if (!dropdownBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
+          dropdownMenu.style.opacity = "0";
+          dropdownMenu.style.transform = "translateY(-10px)";
+          setTimeout(() => {
+            dropdownMenu.classList.add("hidden");
+          }, 200);
+        }
+      });
+
+      // Enhanced button interactions
+      buttons.forEach((button) => {
+        button.addEventListener("click", function (e) {
+          const title = this.getAttribute("title");
+          if (title) {
+            console.log(`${title} clicked`);
+          }
+
+          // Enhanced visual feedback
+          this.style.transform = "translateY(0) scale(0.95)";
+          setTimeout(() => {
+            this.style.transform = "";
+          }, 150);
+        });
+      });
+
+      // Enhanced scroll effect
+      let lastScroll = 0;
+      window.addEventListener("scroll", () => {
+        const currentScroll = window.pageYOffset;
+
+        if (currentScroll <= 0) {
+          navbar.style.boxShadow = "0 2px 8px rgba(0, 148, 198, 0.1)";
+          navbar.style.background = "rgba(255, 255, 255, 0.95)";
+        } else {
+          navbar.style.boxShadow = "0 4px 20px rgba(0, 148, 198, 0.15)";
+          navbar.style.background = "rgba(255, 255, 255, 0.98)";
+        }
+
+        // Optional: Hide/show navbar on scroll
+        if (currentScroll > lastScroll && currentScroll > 100) {
+          // Scrolling down
+          navbar.style.transform = "translateY(-100%)";
+        } else {
+          // Scrolling up
+          navbar.style.transform = "translateY(0)";
+        }
+
+        lastScroll = currentScroll;
+      });
+
+      // Search input focus effects
+      searchInput.addEventListener("focus", function() {
+        this.parentElement.style.transform = "scale(1.02)";
+      });
+
+      searchInput.addEventListener("blur", function() {
+        this.parentElement.style.transform = "scale(1)";
+      });
+    </script>
+  </body>
+</html>

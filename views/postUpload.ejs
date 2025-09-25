@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Pin | Luxpins</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "blue-ncs": "#0094C6",
+              "blue-premium": "#007AA3",
+              "lapis-lazuli": "#005E7C",
+              "deep-teal": "#004C63",
+              "oxford-blue": "#000022",
+              "soft-navy": "#0A0A2A",
+              "rich-black": "#040F16",
+              "rich-black-premium": "#0D1A22",
+              "penn-blue": "#001242",
+              "penn-blue-premium": "#0A1C3C",
+            },
+            animation: {
+              "float-gentle": "floatGentle 6s ease-in-out infinite",
+              "glow-pulse": "glowPulse 3s ease-in-out infinite",
+              "slide-up": "slideUp 0.6s ease-out",
+              "fade-in": "fadeIn 0.8s ease-out",
+              "scale-in": "scaleIn 0.5s ease-out",
+              shimmer: "shimmer 2s linear infinite",
+              "bounce-gentle": "bounceGentle 2s ease-in-out infinite",
+              progress: "progress 0.3s ease-out",
+            },
+            keyframes: {
+              floatGentle: {
+                "0%, 100%": { transform: "translateY(0px)" },
+                "50%": { transform: "translateY(-10px)" },
+              },
+              glowPulse: {
+                "0%, 100%": { boxShadow: "0 0 20px rgba(0, 148, 198, 0.3)" },
+                "50%": { boxShadow: "0 0 40px rgba(0, 148, 198, 0.6)" },
+              },
+              slideUp: {
+                "0%": { transform: "translateY(30px)", opacity: "0" },
+                "100%": { transform: "translateY(0)", opacity: "1" },
+              },
+              fadeIn: {
+                "0%": { opacity: "0" },
+                "100%": { opacity: "1" },
+              },
+              scaleIn: {
+                "0%": { transform: "scale(0.9)", opacity: "0" },
+                "100%": { transform: "scale(1)", opacity: "1" },
+              },
+              shimmer: {
+                "0%": { backgroundPosition: "-200% 0" },
+                "100%": { backgroundPosition: "200% 0" },
+              },
+              bounceGentle: {
+                "0%, 100%": { transform: "translateY(0)" },
+                "50%": { transform: "translateY(-5px)" },
+              },
+              progress: {
+                "0%": { width: "0%" },
+                "100%": { width: "100%" },
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .premium-gradient {
+        background: linear-gradient(
+          135deg,
+          #000022 0%,
+          #0a0a2a 25%,
+          #001242 50%,
+          #0094c6 100%
+        );
+        position: relative;
+        overflow: hidden;
+      }
+
+      .premium-gradient::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(
+            circle at 20% 80%,
+            rgba(0, 148, 198, 0.2) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 80% 20%,
+            rgba(0, 122, 163, 0.15) 0%,
+            transparent 40%
+          ),
+          radial-gradient(
+            circle at 40% 40%,
+            rgba(0, 94, 124, 0.1) 0%,
+            transparent 30%
+          );
+      }
+
+      .glass-morphism {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .modern-input {
+        background: rgba(255, 255, 255, 0.05);
+        border: 2px solid rgba(0, 148, 198, 0.2);
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+      }
+
+      .modern-input:focus {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: #0094c6;
+        box-shadow: 0 0 0 4px rgba(0, 148, 198, 0.1);
+        transform: translateY(-2px);
+      }
+
+      .modern-input::placeholder {
+        color: rgba(255, 255, 255, 0.6);
+      }
+
+      .upload-area {
+        background: rgba(255, 255, 255, 0.03);
+        border: 2px dashed rgba(0, 148, 198, 0.3);
+        backdrop-filter: blur(10px);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .upload-area:hover {
+        border-color: #0094c6;
+        background: rgba(0, 148, 198, 0.08);
+        transform: translateY(-5px);
+      }
+
+      .upload-area.drag-over {
+        border-color: #0094c6;
+        background: rgba(0, 148, 198, 0.15);
+        transform: translateY(-5px) scale(1.02);
+      }
+
+      .premium-btn {
+        background: linear-gradient(135deg, #0094c6 0%, #007aa3 100%);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+
+      .premium-btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+        transition: left 0.6s;
+      }
+
+      .premium-btn:hover::before {
+        left: 100%;
+      }
+
+      .premium-btn:hover {
+        box-shadow: 0 15px 40px rgba(0, 148, 198, 0.4);
+        transform: translateY(-3px);
+      }
+
+      .floating-shape {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(20px);
+      }
+
+      .preview-card {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .step-indicator {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+      }
+
+      .step-indicator.active {
+        background: linear-gradient(135deg, #0094c6, #007aa3);
+      }
+
+      .progress-bar {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+      }
+
+      .progress-fill {
+        background: linear-gradient(90deg, #0094c6, #007aa3);
+      }
+
+      @media (max-width: 1024px) {
+        .split-container {
+          grid-template-columns: 1fr;
+        }
+        .left-panel {
+          order: 2;
+          min-height: 50vh;
+        }
+        .right-panel {
+          order: 1;
+        }
+      }
+    </style>
+  </head>
+  <body class="min-h-screen font-sans">
+    <%- include('navbar') %>
+
+    <div class="split-container grid lg:grid-cols-5 min-h-screen">
+      <!-- Left Panel - Preview Side -->
+      <div
+        class="left-panel lg:col-span-2 premium-gradient flex flex-col justify-center items-center p-8 lg:p-12 relative"
+      >
+        <!-- Floating shapes -->
+        <div
+          class="floating-shape w-24 h-24 top-20 right-20 animate-float-gentle"
+        ></div>
+        <div
+          class="floating-shape w-16 h-16 bottom-32 left-16 animate-float-gentle"
+          style="animation-delay: 1s"
+        ></div>
+        <div
+          class="floating-shape w-12 h-12 top-1/2 left-1/3 animate-bounce-gentle"
+          style="animation-delay: 2s"
+        ></div>
+
+        <div class="relative z-10 text-center max-w-md w-full">
+          <!-- Brand Header -->
+          <div class="mb-8 animate-fade-in">
+            <div
+              class="w-16 h-16 bg-white/20 rounded-2xl backdrop-blur-lg mx-auto mb-6 flex items-center justify-center animate-glow-pulse"
+            >
+              <svg
+                class="w-8 h-8 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                />
+              </svg>
+            </div>
+            <h1 class="text-4xl font-bold text-white mb-2">Create Pin</h1>
+            <p class="text-white/80">Share your visual inspiration</p>
+          </div>
+
+          <!-- Live Preview Card -->
+          <div
+            id="previewCard"
+            class="preview-card rounded-3xl p-6 animate-scale-in"
+            style="animation-delay: 0.3s"
+          >
+            <div id="previewContent" class="text-center">
+              <!-- Default state -->
+              <div id="defaultPreview" class="py-12">
+                <div
+                  class="w-20 h-20 bg-white/10 rounded-2xl mx-auto mb-6 flex items-center justify-center"
+                >
+                  <svg
+                    class="w-10 h-10 text-white/60"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
+                  </svg>
+                </div>
+                <h3 class="text-white font-semibold mb-2">Your Pin Preview</h3>
+                <p class="text-white/60 text-sm">
+                  Upload an image to see preview
+                </p>
+              </div>
+
+              <!-- Image preview -->
+              <div id="imagePreviewArea" class="hidden">
+                <div class="rounded-2xl overflow-hidden mb-4">
+                  <img id="previewImage" class="w-full h-48 object-cover" />
+                </div>
+                <h3 id="previewTitle" class="text-white font-bold text-lg mb-2">
+                  Untitled Pin
+                </h3>
+                <p
+                  id="previewDescription"
+                  class="text-white/70 text-sm mb-3"
+                ></p>
+                <div
+                  id="previewBoard"
+                  class="inline-block px-3 py-1 bg-white/20 rounded-full text-white/80 text-xs"
+                ></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Progress Indicator -->
+          <div class="mt-8 animate-fade-in" style="animation-delay: 0.5s">
+            <div class="progress-bar h-2 rounded-full mb-4">
+              <div
+                id="progressBar"
+                class="progress-fill h-full rounded-full transition-all duration-300"
+                style="width: 25%"
+              ></div>
+            </div>
+            <div class="flex justify-between text-white/60 text-sm">
+              <span>Step 1 of 4</span>
+              <span id="progressText">Upload Image</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Panel - Form Side -->
+      <div
+        class="right-panel lg:col-span-3 bg-white flex items-center justify-center p-8 lg:p-12"
+      >
+        <div class="w-full max-w-2xl">
+          <!-- Step Indicators -->
+          <div class="flex justify-center mb-12 animate-fade-in">
+            <div class="flex space-x-4">
+              <div
+                class="step-indicator active w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold"
+              >
+                1
+              </div>
+              <div
+                class="step-indicator w-10 h-10 rounded-full flex items-center justify-center text-gray-400 font-semibold"
+              >
+                2
+              </div>
+              <div
+                class="step-indicator w-10 h-10 rounded-full flex items-center justify-center text-gray-400 font-semibold"
+              >
+                3
+              </div>
+              <div
+                class="step-indicator w-10 h-10 rounded-full flex items-center justify-center text-gray-400 font-semibold"
+              >
+                4
+              </div>
+            </div>
+          </div>
+
+          <!-- Form -->
+          <form
+            id="uploadForm"
+            action="/upload"
+            method="POST"
+            enctype="multipart/form-data"
+            class="space-y-8"
+          >
+            <!-- Step 1: Image Upload -->
+            <div id="step1" class="animate-slide-up">
+              <h2 class="text-3xl font-bold text-rich-black mb-6">
+                Upload Your Image
+              </h2>
+
+              <div
+                id="uploadArea"
+                class="upload-area border-2 border-dashed rounded-3xl p-12 text-center cursor-pointer"
+              >
+                <div id="uploadContent">
+                  <div
+                    class="w-16 h-16 bg-blue-ncs/20 rounded-2xl mx-auto mb-6 flex items-center justify-center"
+                  >
+                    <svg
+                      class="w-8 h-8 text-blue-ncs"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                      />
+                    </svg>
+                  </div>
+                  <h3 class="text-xl font-bold text-gray-900 mb-2">
+                    Drag & drop your image here
+                  </h3>
+                  <p class="text-gray-600 mb-6">or click to browse files</p>
+                  <label
+                    class="premium-btn inline-block px-8 py-4 text-white font-semibold rounded-2xl cursor-pointer relative"
+                  >
+                    <span class="relative z-10">Choose File</span>
+                    <input
+                      type="file"
+                      name="file"
+                      accept="image/*"
+                      class="hidden"
+                      onchange="previewImage(this)"
+                      required
+                    />
+                  </label>
+                  <p class="text-gray-500 text-sm mt-4">
+                    Supports: JPG, PNG, GIF up to 10MB
+                  </p>
+                </div>
+
+                <div id="imagePreview" class="hidden">
+                  <img
+                    id="uploadedImage"
+                    class="w-full max-h-80 object-cover rounded-2xl mb-6"
+                  />
+                  <button
+                    type="button"
+                    onclick="clearPreview()"
+                    class="text-blue-ncs hover:text-blue-premium font-medium transition-colors"
+                  >
+                    Choose different image
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 2: Title & Description -->
+            <div id="step2" class="hidden">
+              <h2 class="text-3xl font-bold text-rich-black mb-6">
+                Add Details
+              </h2>
+
+              <div class="space-y-6">
+                <div>
+                  <label
+                    class="block text-sm font-semibold text-rich-black mb-3"
+                    >Title *</label
+                  >
+                  <input
+                    type="text"
+                    id="titleInput"
+                    name="title"
+                    placeholder="Give your pin a captivating title"
+                    class="w-full px-6 py-4 modern-input rounded-2xl text-rich-black font-medium placeholder:font-normal focus:outline-none"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label
+                    class="block text-sm font-semibold text-rich-black mb-3"
+                    >Description</label
+                  >
+                  <textarea
+                    id="descriptionInput"
+                    name="description"
+                    rows="4"
+                    placeholder="Describe your pin to help others discover it..."
+                    class="w-full px-6 py-4 modern-input rounded-2xl text-rich-black font-medium placeholder:font-normal focus:outline-none resize-none"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 3: Board Selection -->
+            <div id="step3" class="hidden">
+              <h2 class="text-3xl font-bold text-rich-black mb-6">
+                Choose Board
+              </h2>
+
+              <div class="space-y-4">
+                <div>
+                  <label
+                    class="block text-sm font-semibold text-rich-black mb-3"
+                    >Select Board</label
+                  >
+                  <select
+                    id="boardSelect"
+                    name="board"
+                    class="w-full px-6 py-4 modern-input rounded-2xl text-rich-black focus:outline-none"
+                  >
+                    <option value="">-- Select a board --</option>
+                    <option value="Luxury Interiors">
+                      🏡 Luxury Interiors
+                    </option>
+                    <option value="High Fashion">👗 High Fashion</option>
+                    <option value="Modern Architecture">
+                      🏢 Modern Architecture
+                    </option>
+                    <option value="Minimal Design">✨ Minimal Design</option>
+                    <option value="Art & Culture">🎨 Art & Culture</option>
+                    <option value="Gourmet Delights">
+                      🍽️ Gourmet Delights
+                    </option>
+                    <option value="Travel & Adventure">
+                      ✈️ Travel & Adventure
+                    </option>
+                    <option value="Health & Wellness">
+                      🧘 Health & Wellness
+                    </option>
+                    <option value="DIY & Crafts">🔨 DIY & Crafts</option>
+                  </select>
+                </div>
+
+                <div
+                  class="bg-blue-ncs/5 border border-blue-ncs/20 rounded-2xl p-6"
+                >
+                  <div class="flex items-start space-x-4">
+                    <div
+                      class="w-10 h-10 bg-blue-ncs/20 rounded-xl flex items-center justify-center flex-shrink-0"
+                    >
+                      <svg
+                        class="w-5 h-5 text-blue-ncs"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 class="font-semibold text-rich-black mb-2">
+                        Create New Board
+                      </h4>
+                      <p class="text-gray-600 text-sm">
+                        Don't see the right board? You can create a new one
+                        after publishing this pin.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 4: Final Review -->
+            <div id="step4" class="hidden">
+              <h2 class="text-3xl font-bold text-rich-black mb-6">
+                Review & Publish
+              </h2>
+
+              <div class="bg-gray-50 rounded-3xl p-8">
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                  <div>
+                    <img
+                      id="finalPreviewImage"
+                      class="w-full h-64 object-cover rounded-2xl shadow-lg"
+                    />
+                  </div>
+                  <div>
+                    <h3
+                      id="finalTitle"
+                      class="text-2xl font-bold text-rich-black mb-3"
+                    ></h3>
+                    <p
+                      id="finalDescription"
+                      class="text-gray-600 mb-4 leading-relaxed"
+                    ></p>
+                    <div
+                      id="finalBoard"
+                      class="inline-block px-4 py-2 bg-blue-ncs/10 text-blue-ncs rounded-xl font-medium"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between pt-8">
+              <button
+                type="button"
+                id="prevBtn"
+                onclick="previousStep()"
+                class="hidden px-8 py-4 border-2 border-gray-300 text-gray-700 font-semibold rounded-2xl hover:border-blue-ncs hover:text-blue-ncs transition-all"
+              >
+                ← Previous
+              </button>
+              <div class="flex-1"></div>
+              <button
+                type="button"
+                id="nextBtn"
+                onclick="nextStep()"
+                class="hidden premium-btn px-8 py-4 text-white font-semibold rounded-2xl relative"
+              >
+                <span class="relative z-10">Next →</span>
+              </button>
+              <button
+                type="submit"
+                id="submitBtn"
+                class="hidden premium-btn px-8 py-4 text-white font-semibold rounded-2xl relative"
+              >
+                <span class="relative z-10">Publish Pin</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Success Notification -->
+    <div id="successNotification" class="fixed top-8 right-8 z-50 hidden">
+      <div
+        class="glass-morphism rounded-2xl p-6 bg-green-500/20 border-green-400/30"
+      >
+        <div class="flex items-center space-x-4">
+          <div
+            class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center"
+          >
+            <svg
+              class="w-5 h-5 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+          </div>
+          <span class="text-white font-medium">Pin created successfully!</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error Notification -->
+    <div id="errorNotification" class="fixed top-8 right-8 z-50 hidden">
+      <div
+        class="glass-morphism rounded-2xl p-6 bg-red-500/20 border-red-400/30"
+      >
+        <div class="flex items-center space-x-4">
+          <div
+            class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center"
+          >
+            <svg
+              class="w-5 h-5 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </div>
+          <span class="text-white font-medium" id="errorMessage"
+            >Something went wrong!</span
+          >
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let currentStep = 1;
+      let uploadedFile = null;
+
+      // Initialize
+      document.addEventListener("DOMContentLoaded", function () {
+        updateStepButtons();
+        setupDragAndDrop();
+        setupRealTimePreview();
+      });
+
+      function setupDragAndDrop() {
+        const uploadArea = document.getElementById("uploadArea");
+
+        ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+          uploadArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+
+        ["dragenter", "dragover"].forEach((eventName) => {
+          uploadArea.addEventListener(eventName, highlight, false);
+        });
+
+        ["dragleave", "drop"].forEach((eventName) => {
+          uploadArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e) {
+          uploadArea.classList.add("drag-over");
+        }
+
+        function unhighlight(e) {
+          uploadArea.classList.remove("drag-over");
+        }
+
+        uploadArea.addEventListener("drop", handleDrop, false);
+
+        function handleDrop(e) {
+          const dt = e.dataTransfer;
+          const files = dt.files;
+          if (files.length > 0) {
+            handleFile(files[0]);
+          }
+        }
+
+        uploadArea.addEventListener("click", () => {
+          document.querySelector('input[name="file"]').click();
+        });
+      }
+
+      function setupRealTimePreview() {
+        document
+          .getElementById("titleInput")
+          .addEventListener("input", updatePreview);
+        document
+          .getElementById("descriptionInput")
+          .addEventListener("input", updatePreview);
+        document
+          .getElementById("boardSelect")
+          .addEventListener("change", updatePreview);
+      }
+
+      function handleFile(file) {
+        if (file.type.startsWith("image/")) {
+          uploadedFile = file;
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            showImagePreview(e.target.result);
+            updateProgress(50, "Image Selected");
+            document.getElementById("nextBtn").classList.remove("hidden");
+          };
+          reader.readAsDataURL(file);
+        } else {
+          showError("Please select a valid image file (JPG, PNG, or GIF)");
+        }
+      }
+
+      function previewImage(input) {
+        if (input.files && input.files[0]) {
+          handleFile(input.files[0]);
+        }
+      }
+
+      function showImagePreview(src) {
+        document.getElementById("uploadContent").classList.add("hidden");
+        document.getElementById("imagePreview").classList.remove("hidden");
+        document.getElementById("uploadedImage").src = src;
+
+        // Update live preview
+        document.getElementById("defaultPreview").classList.add("hidden");
+        document.getElementById("imagePreviewArea").classList.remove("hidden");
+        document.getElementById("previewImage").src = src;
+        updatePreview();
+      }
+
+      function clearPreview() {
+        document.getElementById("uploadContent").classList.remove("hidden");
+        document.getElementById("imagePreview").classList.add("hidden");
+        document.querySelector('input[name="file"]').value = "";
+        uploadedFile = null;
+
+        // Reset live preview
+        document.getElementById("defaultPreview").classList.remove("hidden");
+        document.getElementById("imagePreviewArea").classList.add("hidden");
+        updateProgress(25, "Upload Image");
+        document.getElementById("nextBtn").classList.add("hidden");
+      }
+
+      function updatePreview() {
+        const title =
+          document.getElementById("titleInput").value || "Untitled Pin";
+        const description = document.getElementById("descriptionInput").value;
+        const board = document.getElementById("boardSelect").value;
+
+        document.getElementById("previewTitle").textContent = title;
+        document.getElementById("previewDescription").textContent = description;
+        document.getElementById("previewDescription").style.display =
+          description ? "block" : "none";
+        document.getElementById("previewBoard").textContent =
+          board || "No board selected";
+        document.getElementById("previewBoard").style.display = board
+          ? "inline-block"
+          : "none";
+      }
+
+      function nextStep() {
+        if (validateCurrentStep()) {
+          currentStep++;
+          showStep(currentStep);
+          updateProgress();
+          updateStepButtons();
+        }
+      }
+
+      function previousStep() {
+        currentStep--;
+        showStep(currentStep);
+        updateProgress();
+        updateStepButtons();
+      }
+
+      function showStep(step) {
+        // Hide all steps
+        for (let i = 1; i <= 4; i++) {
+          document.getElementById(`step${i}`).classList.add("hidden");
+        }
+
+        // Show current step
+        document.getElementById(`step${step}`).classList.remove("hidden");
+
+        // Update step indicators
+        document
+          .querySelectorAll(".step-indicator")
+          .forEach((indicator, index) => {
+            if (index < step) {
+              indicator.classList.add("active");
+              indicator.classList.remove("text-gray-400");
+              indicator.classList.add("text-white");
+            } else {
+              indicator.classList.remove("active");
+              indicator.classList.add("text-gray-400");
+              indicator.classList.remove("text-white");
+            }
+          });
+
+        // Update final preview for step 4
+        if (step === 4) {
+          updateFinalPreview();
+        }
+      }
+
+      function updateFinalPreview() {
+        const previewImg = document.getElementById("previewImage").src;
+        const title =
+          document.getElementById("titleInput").value || "Untitled Pin";
+        const description =
+          document.getElementById("descriptionInput").value ||
+          "No description provided";
+        const board =
+          document.getElementById("boardSelect").value || "No board selected";
+
+        document.getElementById("finalPreviewImage").src = previewImg;
+        document.getElementById("finalTitle").textContent = title;
+        document.getElementById("finalDescription").textContent = description;
+        document.getElementById("finalBoard").textContent = board;
+      }
+
+      function updateStepButtons() {
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+        const submitBtn = document.getElementById("submitBtn");
+
+        // Hide all buttons first
+        prevBtn.classList.add("hidden");
+        nextBtn.classList.add("hidden");
+        submitBtn.classList.add("hidden");
+
+        // Show appropriate buttons
+        if (currentStep > 1) {
+          prevBtn.classList.remove("hidden");
+        }
+
+        if (currentStep < 4) {
+          if (currentStep === 1 && uploadedFile) {
+            nextBtn.classList.remove("hidden");
+          } else if (currentStep > 1) {
+            nextBtn.classList.remove("hidden");
+          }
+        } else {
+          submitBtn.classList.remove("hidden");
+        }
+      }
+
+      function validateCurrentStep() {
+        switch (currentStep) {
+          case 1:
+            if (!uploadedFile) {
+              showError("Please upload an image to continue");
+              return false;
+            }
+            return true;
+          case 2:
+            const title = document.getElementById("titleInput").value.trim();
+            if (!title) {
+              showError("Please enter a title for your pin");
+              return false;
+            }
+            return true;
+          case 3:
+            const board = document.getElementById("boardSelect").value;
+            if (!board) {
+              showError("Please select a board for your pin");
+              return false;
+            }
+            return true;
+          case 4:
+            return true;
+          default:
+            return false;
+        }
+      }
+
+      function updateProgress(percentage, text) {
+        const progressBar = document.getElementById("progressBar");
+        const progressText = document.getElementById("progressText");
+        const stepText = document.querySelector(
+          ".flex.justify-between span:first-child"
+        );
+
+        if (percentage) {
+          progressBar.style.width = percentage + "%";
+        } else {
+          // Auto calculate based on step
+          const stepPercentages = [25, 50, 75, 100];
+          progressBar.style.width = stepPercentages[currentStep - 1] + "%";
+        }
+
+        if (text) {
+          progressText.textContent = text;
+        } else {
+          const stepTexts = [
+            "Upload Image",
+            "Add Details",
+            "Choose Board",
+            "Review & Publish",
+          ];
+          progressText.textContent = stepTexts[currentStep - 1];
+        }
+
+        stepText.textContent = `Step ${currentStep} of 4`;
+      }
+
+      function showError(message) {
+        const errorNotification = document.getElementById("errorNotification");
+        const errorMessage = document.getElementById("errorMessage");
+
+        errorMessage.textContent = message;
+        errorNotification.classList.remove("hidden");
+        errorNotification.style.animation = "slideUp 0.3s ease-out";
+
+        setTimeout(() => {
+          errorNotification.classList.add("hidden");
+        }, 3000);
+      }
+
+      function showSuccess(message = "Pin created successfully!") {
+        const successNotification = document.getElementById(
+          "successNotification"
+        );
+        const successText = successNotification.querySelector("span");
+
+        successText.textContent = message;
+        successNotification.classList.remove("hidden");
+        successNotification.style.animation = "slideUp 0.3s ease-out";
+
+        setTimeout(() => {
+          successNotification.classList.add("hidden");
+        }, 3000);
+      }
+
+      function resetForm() {
+        // Reset all form fields
+        document.getElementById("uploadForm").reset();
+        uploadedFile = null;
+        currentStep = 1;
+
+        // Reset UI states
+        clearPreview();
+        showStep(1);
+        updateProgress(25, "Upload Image");
+        updateStepButtons();
+
+        // Reset preview
+        document.getElementById("defaultPreview").classList.remove("hidden");
+        document.getElementById("imagePreviewArea").classList.add("hidden");
+      }
+
+      // File size validation
+      function validateFileSize(file) {
+        const maxSize = 10 * 1024 * 1024; // 10MB
+        if (file.size > maxSize) {
+          showError("File size must be less than 10MB");
+          return false;
+        }
+        return true;
+      }
+
+      // Enhanced file handler with validation
+      function handleFile(file) {
+        if (!file.type.startsWith("image/")) {
+          showError("Please select a valid image file (JPG, PNG, or GIF)");
+          return;
+        }
+
+        if (!validateFileSize(file)) {
+          return;
+        }
+
+        uploadedFile = file;
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          showImagePreview(e.target.result);
+          updateProgress(50, "Image Selected");
+          document.getElementById("nextBtn").classList.remove("hidden");
+        };
+        reader.readAsDataURL(file);
+      }
+
+      // Auto-save draft functionality (stores in memory)
+      let draftData = {};
+
+      function saveDraft() {
+        draftData = {
+          title: document.getElementById("titleInput").value,
+          description: document.getElementById("descriptionInput").value,
+          board: document.getElementById("boardSelect").value,
+          step: currentStep,
+        };
+      }
+
+      function loadDraft() {
+        if (draftData.title) {
+          document.getElementById("titleInput").value = draftData.title;
+        }
+        if (draftData.description) {
+          document.getElementById("descriptionInput").value =
+            draftData.description;
+        }
+        if (draftData.board) {
+          document.getElementById("boardSelect").value = draftData.board;
+        }
+        updatePreview();
+      }
+
+      // Auto-save on input changes
+      document.addEventListener("input", function (e) {
+        if (e.target.matches("#titleInput, #descriptionInput, #boardSelect")) {
+          saveDraft();
+        }
+      });
+
+      // Keyboard navigation
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" && e.ctrlKey) {
+          if (currentStep < 4) {
+            nextStep();
+          } else {
+            document.getElementById("submitBtn").click();
+          }
+        }
+
+        if (e.key === "Escape") {
+          const notifications = document.querySelectorAll(
+            "#successNotification, #errorNotification"
+          );
+          notifications.forEach((notification) => {
+            notification.classList.add("hidden");
+          });
+        }
+      });
+
+      // Enhanced progress animation
+      function animateProgressBar() {
+        const progressBar = document.getElementById("progressBar");
+        progressBar.style.transition =
+          "width 0.6s cubic-bezier(0.4, 0, 0.2, 1)";
+      }
+
+      // Call animation setup
+      animateProgressBar();
+
+      // Accessibility improvements
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Tab") {
+          document.body.classList.add("keyboard-navigation");
+        }
+      });
+
+      document.addEventListener("mousedown", function () {
+        document.body.classList.remove("keyboard-navigation");
+      });
+    </script>
+
+    <style>
+      /* Focus styles for keyboard navigation */
+      .keyboard-navigation *:focus {
+        outline: 2px solid #0094c6;
+        outline-offset: 2px;
+      }
+
+      /* Loading animation */
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loading {
+        animation: spin 1s linear infinite;
+      }
+
+      /* Notification animations */
+      @keyframes slideInRight {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      #successNotification,
+      #errorNotification {
+        animation: slideInRight 0.3s ease-out;
+      }
+    </style>
+  </body>
+</html>

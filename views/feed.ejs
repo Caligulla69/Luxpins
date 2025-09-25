@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Feed | Luxpins</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .masonry-grid {
+        columns: 5;
+        column-gap: 16px;
+        padding: 20px;
+      }
+
+      @media (max-width: 1200px) {
+        .masonry-grid {
+          columns: 4;
+        }
+      }
+
+      @media (max-width: 900px) {
+        .masonry-grid {
+          columns: 3;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .masonry-grid {
+          columns: 2;
+          column-gap: 12px;
+          padding: 12px;
+        }
+      }
+
+      .pin-card {
+        break-inside: avoid;
+        margin-bottom: 16px;
+        display: inline-block;
+        width: 100%;
+        border-radius: 16px;
+        overflow: hidden;
+        background: white;
+        box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+        transition: all 0.2s ease;
+        cursor: pointer;
+      }
+
+      .pin-card:hover {
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+      }
+
+      .pin-image {
+        width: 100%;
+        display: block;
+        object-fit: cover;
+      }
+
+      .pin-content {
+        padding: 12px;
+      }
+
+      .pin-title {
+        font-weight: 600;
+        color: #333;
+        font-size: 14px;
+        line-height: 1.3;
+        margin-bottom: 4px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+
+      .pin-description {
+        color: #767676;
+        font-size: 12px;
+        line-height: 1.4;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+      }
+
+      .save-btn {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: #e60023;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 24px;
+        font-size: 12px;
+        font-weight: 600;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        cursor: pointer;
+      }
+
+      .pin-card:hover .save-btn {
+        opacity: 1;
+      }
+
+      .save-btn:hover {
+        background: #ad081b;
+      }
+
+      .save-btn.saved {
+        background: #111;
+      }
+
+      .nav-bar {
+        background: white;
+        box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+        padding: 12px 20px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .logo {
+        font-size: 20px;
+        font-weight: 700;
+        color: #e60023;
+      }
+
+      .search-bar {
+        flex: 1;
+        max-width: 800px;
+        background: #efefef;
+        border-radius: 24px;
+        padding: 12px 20px;
+        border: none;
+        outline: none;
+        font-size: 14px;
+      }
+
+      .search-bar:focus {
+        background: #e1e1e1;
+      }
+
+      .nav-btn {
+        padding: 8px 16px;
+        border-radius: 24px;
+        border: none;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .nav-btn.primary {
+        background: #e60023;
+        color: white;
+      }
+
+      .nav-btn.primary:hover {
+        background: #ad081b;
+      }
+
+      .nav-btn.secondary {
+        background: #efefef;
+        color: #333;
+      }
+
+      .nav-btn.secondary:hover {
+        background: #e1e1e1;
+      }
+
+      .profile-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #ddd;
+        background-size: cover;
+        background-position: center;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 40px;
+        color: #767676;
+      }
+
+      .error-message {
+        text-align: center;
+        padding: 40px;
+        color: #e60023;
+        font-weight: 600;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background: white;
+        padding-top: 80px;
+      }
+    </style>
+  </head>
+  <body>
+    <%- include('navbar') %>
+
+    <!-- Masonry Grid -->
+    <div class="masonry-grid">
+      <% if (posts && posts.length > 0) { %> <% posts.forEach(function(post,
+      index) { %>
+      <div
+        class="pin-card"
+        style="position: relative"
+        data-post-id="<%= post.id || index %>"
+      >
+        <button class="save-btn" data-post-id="<%= post.id || index %>">
+          <%= post.saved ? 'Saved' : 'Save' %>
+        </button>
+
+        <% if (post.image || post.imageUrl || post.src) { %>
+        <img
+          src="<%= post.image || post.imageUrl || post.src %>"
+          alt="<%= post.title || post.alt || 'Pin image' %>"
+          class="pin-image"
+          loading="lazy"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+        />
+        <div
+          style="
+            display: none;
+            padding: 40px;
+            text-align: center;
+            background: #f5f5f5;
+            color: #999;
+          "
+        >
+          Image not available
+        </div>
+        <% } %>
+
+        <div class="pin-content">
+          <% if (post.title) { %>
+          <div class="pin-title"><%= post.title %></div>
+          <% } %> <% if (post.description || post.desc) { %>
+          <div class="pin-description">
+            <%= post.description || post.desc %>
+          </div>
+          <% } %> <% if (post.author) { %>
+          <div style="margin-top: 8px; font-size: 11px; color: #999">
+            by <%= post.author %>
+          </div>
+          <% } %> <% if (post.category || post.tags) { %>
+          <div style="margin-top: 6px">
+            <% if (post.category) { %>
+            <span
+              style="
+                background: #efefef;
+                padding: 2px 8px;
+                border-radius: 12px;
+                font-size: 10px;
+                color: #666;
+              "
+            >
+              <%= post.category %>
+            </span>
+            <% } %> <% if (post.tags && Array.isArray(post.tags)) { %> <%
+            post.tags.slice(0, 2).forEach(function(tag) { %>
+            <span
+              style="
+                background: #efefef;
+                padding: 2px 8px;
+                border-radius: 12px;
+                font-size: 10px;
+                color: #666;
+                margin-left: 4px;
+              "
+            >
+              #<%= tag %>
+            </span>
+            <% }) %> <% } %>
+          </div>
+          <% } %>
+        </div>
+      </div>
+      <% }) %> <% } else { %>
+      <div class="loading">
+        <% if (typeof posts === 'undefined') { %> Loading pins... <% } else { %>
+        <div class="error-message">
+          No pins found. Try refreshing or check back later!
+        </div>
+        <% } %>
+      </div>
+      <% } %>
+    </div>
+
+    <script>
+      // Save button functionality
+      document.querySelectorAll(".save-btn").forEach((btn) => {
+        btn.addEventListener("click", async (e) => {
+          e.stopPropagation();
+          const postId = btn.dataset.postId;
+          const isSaved = btn.textContent.trim() === "Saved";
+
+          try {
+            // Optional: Make API call to save/unsave
+            // const response = await fetch(`/api/posts/${postId}/${isSaved ? 'unsave' : 'save'}`, {
+            //   method: 'POST',
+            //   headers: { 'Content-Type': 'application/json' }
+            // });
+
+            // Update UI
+            if (isSaved) {
+              btn.textContent = "Save";
+              btn.classList.remove("saved");
+              btn.style.background = "#e60023";
+            } else {
+              btn.textContent = "Saved";
+              btn.classList.add("saved");
+              btn.style.background = "#111";
+            }
+          } catch (error) {
+            console.error("Error saving post:", error);
+          }
+        });
+      });
+
+      // Pin click functionality
+      document.querySelectorAll(".pin-card").forEach((card) => {
+        card.addEventListener("click", (e) => {
+          // Don't navigate if save button was clicked
+          if (e.target.classList.contains("save-btn")) return;
+
+          const postId = card.dataset.postId;
+          console.log("Pin clicked:", postId);
+
+          // Navigate to pin detail page
+          window.location.href = `/pin/${postId}`;
+        });
+      });
+
+      // Search functionality
+      const searchBar = document.querySelector(".search-bar");
+      searchBar.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          const query = searchBar.value.trim();
+          if (query) {
+            window.location.href = `/search?q=${encodeURIComponent(query)}`;
+          }
+        }
+      });
+
+      // Infinite scroll (optional)
+      let isLoading = false;
+      window.addEventListener("scroll", () => {
+        if (isLoading) return;
+
+        const { scrollTop, scrollHeight, clientHeight } =
+          document.documentElement;
+        if (scrollTop + clientHeight >= scrollHeight - 1000) {
+          // Load more posts
+          // loadMorePosts();
+        }
+      });
+    </script>
+  </body>
+</html>
