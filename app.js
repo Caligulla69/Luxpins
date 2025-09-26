@@ -8,10 +8,11 @@ var expressSession=require("express-session")
 var indexRouter = require('./routes/index');
 var usersRouter = require('./models/Users');
 const passport = require('passport');
-var flash = require("connect-flash")
+var flash = require("connect-flash");
+const connectDB = require('./db');
 
 var app = express();
-
+connectDB();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');

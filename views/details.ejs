@@ -190,13 +190,13 @@
                   class="w-12 h-12 bg-gradient-to-br from-blue-ncs to-blue-premium rounded-2xl flex items-center justify-center mr-4"
                 >
                   <span class="text-white font-semibold">
-                    <%= post.author.username ?
-                    post.author.username.charAt(0).toUpperCase() : 'U' %>
+                    <%= user.username ?
+                    user.username.charAt(0).toUpperCase() : 'U' %>
                   </span>
                 </div>
                 <div>
                   <p class="font-semibold text-rich-black">
-                    <%= post.author.username || 'Anonymous' %>
+                    <%= user.username || 'Anonymous' %>
                   </p>
                   <p class="text-gray-500 text-sm">
                     <%= new Date(post.createdAt).toLocaleDateString('en-US', {

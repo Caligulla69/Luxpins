@@ -44,12 +44,16 @@ router.get("/pin/:id", isLoggedIn, async function (req, res) {
       return res.status(404).send("Post not found");
     }
 
-    const board = await BoardModel.findById(post.board).populate("posts");
+    const board = await BoardModel.findOne({id: post.board}).populate("posts");
+    const user = await UserModel.findOne({id: post.user})
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
     if (!board) {
       return res.status(404).send("Board not found");
     }
-
-    res.render("details", { post, board });
+    
+    res.render("details", { post, board,user });
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error");
